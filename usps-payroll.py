@@ -206,7 +206,19 @@ try:
 except:
 	driver.quit()
 
-time.sleep(2)
+time.sleep(20)
+
+
+# User needs to install this Google Chrome Extension
+# https://chrome.google.com/webstore/detail/duplicate-tab-shortcut/klehggjefofgiajjfpoebdidnpjmljhb?hl=en
+# User sends the keyboard shortcut: 'SHIFT + ALT + d' within 20 seconds
+
+# NOT WORKING
+# 1. driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.SHIFT, Keys.ALT, 'd')
+# 2. driver.find_element(By.TAG_NAME, 'body').send_keys('\ue03d' + 't')
+# 3. element.send_keys(Keys.SHIFT, Keys.ALT, 'd')
+
+driver.switch_to.window(driver.window_handles[1])
 
 # Make duplicate tab in the browser... try this ... THIS WORKS! WHEN I ENTER PASSWORD FROM pyperclip module
 
@@ -220,15 +232,26 @@ time.sleep(2)
 
 # This where the user pastes in the password saved in the clipboard from the pyperclip module
 
-# The following does not work
-# try:
-# 	element = WebDriverWait(driver, 30).until(
-# 		EC.presence_of_element_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
-# 	)
-# 	element.click()
-# except:
-# 	driver.quit()
-# 	print('Element not located...')
+# The following now works! And gives the most recent net pay on pay day
+try:
+	element = WebDriverWait(driver, 10).until(
+		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
+	)
+	element[0].click()
+except:
+	# driver.quit()
+	print('Element not located...')
+
+try:
+	element = WebDriverWait(driver, 10).until(
+		EC.presence_of_element_located((By.ID, 'net-pay'))
+	)
+	print(element.text)
+except:
+	# driver.quit()
+	print('Element not located...')	
+
+
 
 
 # driver.quit()
