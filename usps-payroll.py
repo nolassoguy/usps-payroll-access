@@ -18,7 +18,10 @@ chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 chrome_options.add_experimental_option("useAutomationExtension", False)
 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-chrome_options.add_argument("--incognito")
+# This adds the Duplicate Tab Extension in Google Chrome
+chrome_options.add_extension("extension_1_5_1_0.crx")
+# This makes Chrome go into 'incognito' mode
+# chrome_options.add_argument("--incognito")
 
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
@@ -208,9 +211,6 @@ except:
 
 time.sleep(20)
 
-
-# User needs to install this Google Chrome Extension
-# https://chrome.google.com/webstore/detail/duplicate-tab-shortcut/klehggjefofgiajjfpoebdidnpjmljhb?hl=en
 # User sends the keyboard shortcut: 'SHIFT + ALT + d' within 20 seconds
 
 # NOT WORKING
@@ -238,20 +238,15 @@ try:
 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
 	)
 	element[0].click()
-except:
-	# driver.quit()
-	print('Element not located...')
 
-try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.ID, 'net-pay'))
 	)
 	print(element.text)
 except:
 	# driver.quit()
-	print('Element not located...')	
+	print('Element not located...')
 
+time.sleep(20)
 
-
-
-# driver.quit()
+driver.quit()
