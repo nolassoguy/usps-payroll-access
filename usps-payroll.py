@@ -147,7 +147,7 @@ one_time_code = matches[0]
 
 time.sleep(2)
 
-# Inputs the unique one-time-code sent to user's Gmail Inbox
+# Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.ID, 'input137'))
@@ -214,15 +214,19 @@ try:
 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
 	)
 	element[0].click()
-
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.ID, 'net-pay'))
 	)
 	print(element.text)
+	time.sleep(5)
+	element = WebDriverWait(driver, 10).until(
+		EC.presence_of_element_located((By.ID, 'logout-link'))
+	)
+	element.click()
 except:
-	# driver.quit()
+	driver.quit()
 	print('Element not located...')
 
-time.sleep(15)
+time.sleep(30)
 
 driver.quit()
