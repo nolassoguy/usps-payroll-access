@@ -20,8 +20,8 @@ chrome_options.add_experimental_option("useAutomationExtension", False)
 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 # This adds the Duplicate Tab Extension in Google Chrome
 chrome_options.add_extension("extension_1_5_1_0.crx")
-# This makes Chrome go into 'incognito' mode
-# chrome_options.add_argument("--incognito")
+# The following code makes Chrome go into 'incognito' mode
+# chrome_options.add_argument("--incognito") - not needed as extension will not be added
 
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
@@ -36,18 +36,13 @@ driver = webdriver.Chrome(service = s, options = chrome_options)
 
 driver.maximize_window()
 
-
 driver.get(login_url)
 
 # Generic 'button.button-primary' button click function
 def primary_button():
 	driver.find_element(By.CLASS_NAME, 'button.button-primary').send_keys(Keys.RETURN)
 
-# time.sleep(2)
-
 # 'Sign in' button click
-# sign_in_btn = driver.find_element(By.XPATH, "//button[text()='Sign in']")
-# sign_in_btn.click()
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.XPATH, "//button[text()='Sign in']"))
@@ -57,7 +52,6 @@ except:
 	driver.quit()
 
 # Employee ID to be populated
-# driver.find_element(By.ID, 'input27').send_keys(username)
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.ID, 'input27'))
@@ -91,8 +85,6 @@ except:
 	driver.quit()
 
 # 'Send me an email' button click
-# send_me = driver.find_element(By.CLASS_NAME, 'button.button-primary')
-# send_me.click()
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.CLASS_NAME, 'button.button-primary'))
@@ -101,9 +93,7 @@ try:
 except:
 	driver.quit()
 
-# Enter code manually link instead of link provided in email
-# enter_code = driver.find_element(By.CLASS_NAME, 'button-link.enter-auth-code-instead-link')
-# enter_code.click()
+# Program clicks to send one-time verification code to email registered on LiteBlue
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.CLASS_NAME, 'button-link.enter-auth-code-instead-link'))
@@ -114,8 +104,8 @@ except:
 
 time.sleep(5)
 
-########################
 # Gmail code extractor #
+# START - Gmail code extractor snippet #
 
 imap_url = 'imap.gmail.com'
 
@@ -152,13 +142,12 @@ for msg in msgs[::-1]:
 					matches = pattern.findall(part.get_payload())
 					#print(part.get_payload())
 one_time_code = matches[0]
-
-########################
+                       
+# END - Gmail code extractor snippet #
 
 time.sleep(2)
 
-# Inputs a unique one time code sent to user's Gmail Inbox
-# driver.find_element(By.ID, 'input137').send_keys(one_time_code)
+# Inputs the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.ID, 'input137'))
@@ -198,8 +187,6 @@ try:
 except:
 	driver.quit()
 
-# time.sleep(2)
-
 # Inputs password provided by user
 try:
 	element = WebDriverWait(driver, 10).until(
@@ -211,28 +198,17 @@ except:
 
 time.sleep(20)
 
-# User sends the keyboard shortcut: 'SHIFT + ALT + d' within 20 seconds
-
-# NOT WORKING
-# 1. driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.SHIFT, Keys.ALT, 'd')
-# 2. driver.find_element(By.TAG_NAME, 'body').send_keys('\ue03d' + 't')
-# 3. element.send_keys(Keys.SHIFT, Keys.ALT, 'd')
+# User makes a duplicate tab in the browser using keys: 'SHIFT' + 'ALT + d'
 
 driver.switch_to.window(driver.window_handles[1])
 
-# Make duplicate tab in the browser... try this ... THIS WORKS! WHEN I ENTER PASSWORD FROM pyperclip module
+time.sleep(2)
 
-# Clicks on the 'Login' button for 'ePayroll'
-# login_btn = driver.find_element(By.XPATH, "//button[text()='Login']")
-# login_btn.click()
+# User pastes in the password provided via the pyperclip module: 'COMMAND' + 'v'
 
-# time.sleep(5)
+# User mouse clicks on the 'Login' button
 
-# User has to hit back in the browser instead of 'driver.back()'
-
-# This where the user pastes in the password saved in the clipboard from the pyperclip module
-
-# The following now works! And gives the most recent net pay on pay day
+# The following gives user the most recent net pay on pay day
 try:
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
@@ -247,6 +223,6 @@ except:
 	# driver.quit()
 	print('Element not located...')
 
-time.sleep(20)
+time.sleep(15)
 
 driver.quit()
