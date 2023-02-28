@@ -208,25 +208,53 @@ time.sleep(2)
 
 # User mouse clicks on the 'Login' button
 
-# The following gives user the most recent net pay on pay day
-try:
-	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
-	)
-	element[0].click()
-	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'net-pay'))
-	)
-	print(element.text)
-	time.sleep(5)
-	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'logout-link'))
-	)
-	element.click()
-except:
-	driver.quit()
-	print('Element not located...')
+# The following gives user the most recent net pay to first paycheck of 2023
 
-time.sleep(30)
+# TRYING A WHILE LOOP BELOW
+count = 0
+while count < 27:
+	try:
+		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6')))
+		
+		elements[count].click()
+		
+		time.sleep(5)
+		
+		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
+		
+		time.sleep(5)
+		
+		print(net_pay.text)
+		
+		next_statement = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Statements')))
 
-driver.quit()
+		next_statement.click()
+
+		count += 1
+
+	except:
+		driver.quit()
+		print('No more paychecks available...')
+
+
+# try:
+# 	element = WebDriverWait(driver, 10).until(
+# 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
+# 	)
+# 	element[0].click()
+# 	element = WebDriverWait(driver, 10).until(
+# 		EC.presence_of_element_located((By.ID, 'net-pay'))
+# 	)
+# 	print(element.text)
+# 	time.sleep(5)
+# 	element = WebDriverWait(driver, 10).until(
+# 		EC.presence_of_element_located((By.ID, 'logout-link'))
+# 	)
+# 	element.click()
+# except:
+# 	driver.quit()
+# 	print('Element not located...')
+
+# time.sleep(30)
+
+# driver.quit()
