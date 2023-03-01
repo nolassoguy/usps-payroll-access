@@ -54,7 +54,7 @@ except:
 # Employee ID to be populated
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input27'))
+		EC.presence_of_element_located((By.NAME, 'identifier'))
 	)
 	element.send_keys(username)
 except:
@@ -66,7 +66,7 @@ primary_button()
 # Password to be populated
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input59'))
+		EC.presence_of_element_located((By.CLASS_NAME, 'password-with-toggle')) # the ID recently changed - switched to use CLASS_NAME instead
 	)
 	element.send_keys(password)
 except:
@@ -102,7 +102,7 @@ try:
 except:
 	driver.quit()
 
-time.sleep(5)
+time.sleep(2)
 
 # Gmail code extractor #
 # START - Gmail code extractor snippet #
@@ -150,7 +150,7 @@ time.sleep(2)
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input137'))
+		EC.presence_of_element_located((By.ID, 'input138')) # this number recently changed to 138 from 137 - need to find a better way to access this textfield with a CLASS_NAME perhaps?
 	)
 	element.send_keys(one_time_code)
 except:
@@ -176,7 +176,7 @@ try:
 except:
 	driver.quit()
 
-time.sleep(5)
+time.sleep(2)
 
 # Inputs eight digit username
 try:
@@ -200,7 +200,11 @@ time.sleep(20)
 
 # User makes a duplicate tab in the browser using keys: 'SHIFT' + 'ALT + d'
 
-driver.switch_to.window(driver.window_handles[1])
+try:
+	driver.switch_to.window(driver.window_handles[1])
+except IndexError as e:
+	print(f'IndexError: {e}')
+	driver.quit()
 
 time.sleep(2)
 
@@ -212,17 +216,17 @@ time.sleep(2)
 
 # TRYING A WHILE LOOP BELOW
 count = 0
-while count < 27:
+while count < 6: # <--- This number needs to be changed Monday 13 March 2023 to '7' 
 	try:
 		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6')))
 		
 		elements[count].click()
 		
-		time.sleep(5)
+		#time.sleep(1)
 		
 		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
 		
-		time.sleep(5)
+		#time.sleep(1)
 		
 		print(net_pay.text)
 		
@@ -232,10 +236,17 @@ while count < 27:
 
 		count += 1
 
-	except:
-		driver.quit()
-		print('No more paychecks available...')
+		if count == 5: # <--- This number needs to be changed Monday 13 March 2023 to '6' 
+			break
 
+	except: # need to add exception handling or do I use 'finally' here instead of 'except?
+		driver.quit()
+
+time.sleep(2)
+
+print('That\'s all folks.')
+
+driver.quit()
 
 # try:
 # 	element = WebDriverWait(driver, 10).until(
