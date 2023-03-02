@@ -11,7 +11,7 @@ import app_password
 import re
 import creds
 import maskpass
-import time
+import time # TODO: use 'from time import sleep' and erase redundancies in script below
 import pyperclip as pc
 
 chrome_options = Options()
@@ -21,7 +21,7 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 # This adds the Duplicate Tab Extension in Google Chrome
 chrome_options.add_extension("extension_1_5_1_0.crx")
 # The following code makes Chrome go into 'incognito' mode
-# chrome_options.add_argument("--incognito") - not needed as extension will not be added
+# chrome_options.add_argument("--incognito") - not needed as extension cannot be added in this mode 
 
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
@@ -66,7 +66,7 @@ primary_button()
 # Password to be populated
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.CLASS_NAME, 'password-with-toggle')) # the ID recently changed - switched to use CLASS_NAME instead
+		EC.presence_of_element_located((By.CLASS_NAME, 'password-with-toggle')) # the ID recently changed - switched to use CLASS_NAME instead - more fool proof
 	)
 	element.send_keys(password)
 except:
@@ -150,7 +150,7 @@ time.sleep(2)
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input138')) # this number recently changed to 138 from 137 - need to find a better way to access this textfield with a CLASS_NAME perhaps?
+		EC.presence_of_element_located((By.ID, 'input138')) # This number recently changed to input138 from input137 - need to find a better way to access this textfield with a CLASS_NAME perhaps?
 	)
 	element.send_keys(one_time_code)
 except:
@@ -160,7 +160,7 @@ primary_button()
 
 # Clicks the 'ePayroll' link at the bottom of landing page
 try:
-	element = WebDriverWait(driver, 10).until(
+	element = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.LINK_TEXT, 'ePayroll'))
 	)
 	element.click()
@@ -198,12 +198,11 @@ except:
 
 time.sleep(20)
 
-# User makes a duplicate tab in the browser using keys: 'SHIFT' + 'ALT + d'
+# User makes a duplicate tab in the browser using keys: 'SHIFT' + 'ALT + d' making use of the Chrome extension that is temporarily installed
 
 try:
 	driver.switch_to.window(driver.window_handles[1])
-except IndexError as e:
-	print(f'IndexError: {e}')
+except:
 	driver.quit()
 
 time.sleep(2)
@@ -212,21 +211,22 @@ time.sleep(2)
 
 # User mouse clicks on the 'Login' button
 
-# The following gives user the most recent net pay to first paycheck of 2023
+# Selenium finds all paychecks displayed on page for the year 2023
+num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
-# TRYING A WHILE LOOP BELOW
+# While loop goes to each paycheck, finds the net pay and prints it in the CLI
 count = 0
-while count < 6: # <--- This number needs to be changed Monday 13 March 2023 to '7' 
+while count < num_of_paychecks + 1:
 	try:
 		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6')))
 		
 		elements[count].click()
 		
-		#time.sleep(1)
+		time.sleep(2)
 		
 		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
 		
-		#time.sleep(1)
+		time.sleep(2)
 		
 		print(net_pay.text)
 		
@@ -236,18 +236,27 @@ while count < 6: # <--- This number needs to be changed Monday 13 March 2023 to 
 
 		count += 1
 
-		if count == 5: # <--- This number needs to be changed Monday 13 March 2023 to '6' 
+		if count == num_of_paychecks:
 			break
 
-	except: # need to add exception handling or do I use 'finally' here instead of 'except?
+	except:
 		driver.quit()
-
-time.sleep(2)
 
 print('That\'s all folks.')
 
+try:
+	element = WebDriverWait(driver, 10).until(
+		EC.presence_of_element_located((By.ID, 'logout-link'))
+	)
+	element.click()
+except:
+	driver.quit()
+
+time.sleep(20)
+
 driver.quit()
 
+# The following code grabs the most recent paycheck only
 # try:
 # 	element = WebDriverWait(driver, 10).until(
 # 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
@@ -265,7 +274,3 @@ driver.quit()
 # except:
 # 	driver.quit()
 # 	print('Element not located...')
-
-# time.sleep(30)
-
-# driver.quit()
