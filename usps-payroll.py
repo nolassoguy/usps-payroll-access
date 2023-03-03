@@ -5,23 +5,19 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from time import sleep
 import imaplib
-import email
-import app_password
-import re
-import creds
-import maskpass
-import time # TODO: use 'from time import sleep' and erase redundancies in script below
+import email, app_password, re, creds, maskpass
 import pyperclip as pc
 
 chrome_options = Options()
-chrome_options.add_experimental_option("detach", True)
-chrome_options.add_experimental_option("useAutomationExtension", False)
-chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+chrome_options.add_experimental_option('detach', True)
+chrome_options.add_experimental_option('useAutomationExtension', False)
+chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
 # This adds the Duplicate Tab Extension in Google Chrome
-chrome_options.add_extension("extension_1_5_1_0.crx")
+chrome_options.add_extension('extension_1_5_1_0.crx')
 # The following code makes Chrome go into 'incognito' mode
-# chrome_options.add_argument("--incognito") - not needed as extension cannot be added in this mode 
+# chrome_options.add_argument('--incognito') - not needed as extension cannot be added in this mode 
 
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
@@ -102,7 +98,7 @@ try:
 except:
 	driver.quit()
 
-time.sleep(2)
+sleep(2)
 
 # Gmail code extractor #
 # START - Gmail code extractor snippet #
@@ -145,7 +141,7 @@ one_time_code = matches[0]
                        
 # END - Gmail code extractor snippet #
 
-time.sleep(2)
+sleep(2)
 
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
@@ -160,7 +156,7 @@ primary_button()
 
 # Clicks the 'ePayroll' link at the bottom of landing page
 try:
-	element = WebDriverWait(driver, 20).until(
+	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_element_located((By.LINK_TEXT, 'ePayroll'))
 	)
 	element.click()
@@ -176,7 +172,7 @@ try:
 except:
 	driver.quit()
 
-time.sleep(2)
+sleep(2)
 
 # Inputs eight digit username
 try:
@@ -196,16 +192,17 @@ try:
 except:
 	driver.quit()
 
-time.sleep(20)
+sleep(15)
 
-# User makes a duplicate tab in the browser using keys: 'SHIFT' + 'ALT + d' making use of the Chrome extension that is temporarily installed
+# User makes a duplicate tab in the browser using keys within 15 seconds: 'SHIFT' + 'ALT + d' making use of the Chrome extension that is temporarily installed
+# print('Make duplicate tab using keys \'SHIFT\' + \'ALT\' + \'d\'')
 
 try:
 	driver.switch_to.window(driver.window_handles[1])
 except:
 	driver.quit()
 
-time.sleep(2)
+sleep(2)
 
 # User pastes in the password provided via the pyperclip module: 'COMMAND' + 'v'
 
@@ -222,13 +219,31 @@ while count < num_of_paychecks + 1:
 		
 		elements[count].click()
 		
-		time.sleep(2)
+		sleep(2)
+
+		# TODO: Expand the Leave & Retirement Accordian 
+		# try:
+		# 	element = WebDriverWait(driver, 10).until(
+		# 		EC.presence_of_all_elements_located((By.???ID OR CLASS_NAME???, 'btn.btn-link.w-100.text-left'))
+		# 	)
+		# 	element[1].click() # This is right, right? Element 1
+		# except:
+		# 	driver.quit()
+
+		sleep(2)
 		
+		pay_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-date')))
 		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
+		al_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'annual-leave-earned-available')))
+		sl_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sick-leave-current-balance')))
+		xday_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'other-leave-amount-4')))
 		
-		time.sleep(2)
+		sleep(2)
 		
-		print(net_pay.text)
+		print(f'\n{pay_date.text}: {net_pay.text}')
+		print(f'Available AL Balance: {al_balance.text}')
+		print(f'Current SL Balance: {sl_balance.text}')
+		print(f'Current X-Days Balance: {xday_balance.text}\n')
 		
 		next_statement = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Statements')))
 
@@ -239,10 +254,23 @@ while count < num_of_paychecks + 1:
 		if count == num_of_paychecks:
 			break
 
+
+		# TODO:
+		# leave and retirement btn btn-link w-100 text-left (ID OR CLASS_NAMW????)
+
+		# <td class="w-75">= Available AL Balance</td> this is within <tr>[08]
+		# <td id="annual-leave-earned-available" class="w-25 text-right font-weight-bold">12.50</td>
+		# <td class="w-75">= Current SL Balance</td>
+		# <td id="sick-leave-current-balance" class="w-25 text-right font-weight-bold">3.00</td>
+		# x-days:
+		# <td id="other-leave-amount-4" class="w-25 text-right" colspan="1">2.00</td>
+		# <td id="other-leave-amount-4" class="w-25 text-right" colspan="1">2.00</td>
 	except:
 		driver.quit()
 
 print('That\'s all folks.')
+
+sleep(10)
 
 try:
 	element = WebDriverWait(driver, 10).until(
@@ -252,7 +280,8 @@ try:
 except:
 	driver.quit()
 
-time.sleep(20)
+sleep(10)
+
 
 driver.quit()
 
@@ -266,7 +295,7 @@ driver.quit()
 # 		EC.presence_of_element_located((By.ID, 'net-pay'))
 # 	)
 # 	print(element.text)
-# 	time.sleep(5)
+# 	sleep(5)
 # 	element = WebDriverWait(driver, 10).until(
 # 		EC.presence_of_element_located((By.ID, 'logout-link'))
 # 	)
