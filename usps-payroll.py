@@ -146,7 +146,7 @@ sleep(2)
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input138')) # This number recently changed to input138 from input137 - need to find a better way to access this textfield with a CLASS_NAME perhaps?
+		EC.presence_of_element_located((By.ID, 'input138')) # This number recently changed to input138 from input137 - need to find a better way to access this text field with a CLASS_NAME perhaps?
 	)
 	element.send_keys(one_time_code)
 except:
@@ -200,7 +200,7 @@ sleep(15)
 try:
 	driver.switch_to.window(driver.window_handles[1])
 except:
-	driver.quit()
+	driver.quit() #TODO need an exception here for when there is no 2nd tab
 
 sleep(2)
 
@@ -208,11 +208,12 @@ sleep(2)
 
 # User mouse clicks on the 'Login' button
 
-# Selenium finds all paychecks displayed on page for the year 2023
+# Selenium finds all paychecks displayed on page for the year 2023 (change for other yearsw with '/22' or '/21' for example)
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
 # While loop goes to each paycheck, finds the net pay and prints it in the CLI
 count = 0
+
 while count < num_of_paychecks + 1:
 	try:
 		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6')))
@@ -222,13 +223,13 @@ while count < num_of_paychecks + 1:
 		sleep(2)
 
 		# TODO: Expand the Leave & Retirement Accordian 
-		# try:
-		# 	element = WebDriverWait(driver, 10).until(
-		# 		EC.presence_of_all_elements_located((By.???ID OR CLASS_NAME???, 'btn.btn-link.w-100.text-left'))
-		# 	)
-		# 	element[1].click() # This is right, right? Element 1
-		# except:
-		# 	driver.quit()
+		try:
+			element = WebDriverWait(driver, 10).until(
+				EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.btn-link.w-100.text-left'))
+			)
+			element[2].click()
+		except:
+			driver.quit()
 
 		sleep(2)
 		
@@ -238,9 +239,10 @@ while count < num_of_paychecks + 1:
 		sl_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sick-leave-current-balance')))
 		xday_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'other-leave-amount-4')))
 		
+
 		sleep(2)
 		
-		print(f'\n{pay_date.text}: {net_pay.text}')
+		print(pay_date.text + ': ' + net_pay.text.replace('$','').replace(',',''))
 		print(f'Available AL Balance: {al_balance.text}')
 		print(f'Current SL Balance: {sl_balance.text}')
 		print(f'Current X-Days Balance: {xday_balance.text}\n')
@@ -253,18 +255,6 @@ while count < num_of_paychecks + 1:
 
 		if count == num_of_paychecks:
 			break
-
-
-		# TODO:
-		# leave and retirement btn btn-link w-100 text-left (ID OR CLASS_NAMW????)
-
-		# <td class="w-75">= Available AL Balance</td> this is within <tr>[08]
-		# <td id="annual-leave-earned-available" class="w-25 text-right font-weight-bold">12.50</td>
-		# <td class="w-75">= Current SL Balance</td>
-		# <td id="sick-leave-current-balance" class="w-25 text-right font-weight-bold">3.00</td>
-		# x-days:
-		# <td id="other-leave-amount-4" class="w-25 text-right" colspan="1">2.00</td>
-		# <td id="other-leave-amount-4" class="w-25 text-right" colspan="1">2.00</td>
 	except:
 		driver.quit()
 
@@ -282,24 +272,4 @@ except:
 
 sleep(10)
 
-
 driver.quit()
-
-# The following code grabs the most recent paycheck only
-# try:
-# 	element = WebDriverWait(driver, 10).until(
-# 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
-# 	)
-# 	element[0].click()
-# 	element = WebDriverWait(driver, 10).until(
-# 		EC.presence_of_element_located((By.ID, 'net-pay'))
-# 	)
-# 	print(element.text)
-# 	sleep(5)
-# 	element = WebDriverWait(driver, 10).until(
-# 		EC.presence_of_element_located((By.ID, 'logout-link'))
-# 	)
-# 	element.click()
-# except:
-# 	driver.quit()
-# 	print('Element not located...')
