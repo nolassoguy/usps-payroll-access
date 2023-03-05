@@ -14,10 +14,10 @@ chrome_options = Options()
 chrome_options.add_experimental_option('detach', True)
 chrome_options.add_experimental_option('useAutomationExtension', False)
 chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
-# This adds the Duplicate Tab Extension in Google Chrome
+# This temporarily adds the 'Duplicate Tab Shortcut' extension in Google Chrome
 chrome_options.add_extension('extension_1_5_1_0.crx')
-# The following code makes Chrome go into 'incognito' mode
-# chrome_options.add_argument('--incognito') - not needed as extension cannot be added in this mode 
+# The following code makes Chrome go into 'incognito' mode if ever needed
+# chrome_options.add_argument('--incognito')
 
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
@@ -100,8 +100,9 @@ except:
 
 sleep(2)
 
-# Gmail code extractor #
-# START - Gmail code extractor snippet #
+# - START - Gmail code extractor snippet #
+# Code taken and modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
+# (https://youtu.be/K21BSZPFIjQ)
 
 imap_url = 'imap.gmail.com'
 
@@ -137,9 +138,9 @@ for msg in msgs[::-1]:
 					pattern = re.compile(r'\d{6}')
 					matches = pattern.findall(part.get_payload())
 					#print(part.get_payload())
-one_time_code = matches[0]
-                       
-# END - Gmail code extractor snippet #
+one_time_code = matches[0]    
+
+# - END - Gmail code extractor snippet #
 
 sleep(2)
 
@@ -194,8 +195,8 @@ except:
 
 sleep(15)
 
-# User makes a duplicate tab in the browser using keys within 15 seconds: 'SHIFT' + 'ALT + d' making use of the Chrome extension that is temporarily installed
-# print('Make duplicate tab using keys \'SHIFT\' + \'ALT\' + \'d\'')
+# IMPORTANT: User makes a duplicate tab in the browser using the following keys within 15 seconds: 'SHIFT' + 'ALT + d'
+# This bypasses 'j_security' for some reason and allows user access to ePayroll
 
 try:
 	driver.switch_to.window(driver.window_handles[1])
@@ -204,11 +205,11 @@ except:
 
 sleep(2)
 
-# User pastes in the password provided via the pyperclip module: 'COMMAND' + 'v'
+# User pastes in the password provided via the 'pyperclip' module: 'COMMAND' + 'v'
 
-# User mouse clicks on the 'Login' button
+# User mouse clicks on or sends RETURN key for the 'Login' button
 
-# Selenium finds all paychecks displayed on page for the year 2023 (change for other yearsw with '/22' or '/21' for example)
+# Selenium finds all paychecks displayed on page for the year 2023 (TODO: make variables and ask for user input if they would like to change the year - this can be changed with '/22' or '/21' for example)
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
 # While loop goes to each paycheck, finds the net pay and prints it in the CLI
@@ -216,13 +217,13 @@ count = 0
 
 while count < num_of_paychecks + 1:
 	try:
-		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6')))
-		
+		elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'list-group-item.list-group-item-action.col-md-6'))
+		)
 		elements[count].click()
 		
 		sleep(2)
 
-		# TODO: Expand the Leave & Retirement Accordian 
+		# This expands the 'Leave & Retirement' accordian menu 
 		try:
 			element = WebDriverWait(driver, 10).until(
 				EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.btn-link.w-100.text-left'))
@@ -239,7 +240,6 @@ while count < num_of_paychecks + 1:
 		sl_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sick-leave-current-balance')))
 		xday_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'other-leave-amount-4')))
 		
-
 		sleep(2)
 		
 		print(pay_date.text + ': ' + net_pay.text.replace('$','').replace(',',''))
