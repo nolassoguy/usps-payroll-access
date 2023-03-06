@@ -22,6 +22,8 @@ chrome_options.add_extension('extension_1_5_1_0.crx')
 username = creds.username
 password = maskpass.advpass('Enter your password:\n', '*')
 
+print('')
+
 # Copies the user's password into the clipboard to paste later on in the script
 pc.copy(password)
 
@@ -101,7 +103,7 @@ except:
 sleep(2)
 
 # - START - Gmail code extractor snippet #
-# Code taken and modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
+# Code modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
 # (https://youtu.be/K21BSZPFIjQ)
 
 imap_url = 'imap.gmail.com'
@@ -209,7 +211,33 @@ sleep(2)
 
 # User mouse clicks on or sends RETURN key for the 'Login' button
 
+######
+# TODO: THIS IS NOT WORKING AT THE MOMENT - PROGRAM ONLY GIVES TO PAYCHECKS FROM 2023...
+# while loop that asks user what year they would like to select...
+# year = input('\nWhich year would you like to select? 2021, 2022, or 2023?\n')
+
+# while year != '2023' and year != '2022' and year != '2021':
+# 	year = input('\nPlease type either 2023, 2022, or 2021\n')
+
+# if year == '2023':
+# 	num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23'))
+# 	print('\n2023')
+# elif year == '2022':
+# 	elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.btn-link.w-100.text-center'))
+# 		)
+# 	elements[1].click()
+# 	num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/22'))
+# 	print('\n2022') #..... TODO: need to make program click that accordian menu link
+# elif year == '2021':
+# 	elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.btn-link.w-100.text-center'))
+# 		)
+# 	elements[2].click()
+# 	num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/21'))
+# 	print('\n2021') #..... TODO: need to make program click that accordian menu link
+#####
+
 # Selenium finds all paychecks displayed on page for the year 2023 (TODO: make variables and ask for user input if they would like to change the year - this can be changed with '/22' or '/21' for example)
+
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
 # While loop goes to each paycheck, finds the net pay and prints it in the CLI
@@ -242,6 +270,7 @@ while count < num_of_paychecks + 1:
 		
 		sleep(2)
 		
+		print('PAYCHECK')
 		print(pay_date.text + ': ' + net_pay.text.replace('$','').replace(',',''))
 		print(f'Available AL Balance: {al_balance.text}')
 		print(f'Current SL Balance: {sl_balance.text}')
