@@ -197,8 +197,8 @@ except:
 
 sleep(15)
 
-# IMPORTANT: User makes a duplicate tab in the browser using the following keys within 15 seconds: 'SHIFT' + 'ALT + d'
-# This bypasses 'j_security' for some reason and allows user access to ePayroll
+# IMPORTANT: 	User makes a duplicate tab in the browser using the following keys within 15 seconds: 'SHIFT' + 'ALT + d'
+# 				This bypasses 'j_security' for some reason and allows user access to ePayroll
 
 try:
 	driver.switch_to.window(driver.window_handles[1])
@@ -207,15 +207,13 @@ except:
 
 sleep(2)
 
-# User pastes in the password provided via the 'pyperclip' module: 'COMMAND' + 'v'
-
-# User hits 'Tab' on the keyboard or selects the 'Password' text box with mouse click
-
-# User mouse clicks on or sends RETURN key for the 'Login' button
+# IMPORTANT:	User hits 'Tab' on the keyboard or selects the 'Password' text box with mouse click
+# 				User then pastes in the password stored and provided by the 'pyperclip' module: 'COMMAND' + 'v'				
+#				User mouse clicks on or sends RETURN key for the 'Login' button			
 
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
-# While loop goes to each paycheck, finds the net pay and prints it in the CLI
+# While loop goes to each paycheck, finds the pay date, net pay, AL, SL, X-Days and prints each in the terminal window
 count = 0
 
 while count < num_of_paychecks + 1:
