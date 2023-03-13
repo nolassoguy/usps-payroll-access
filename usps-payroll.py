@@ -5,9 +5,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from time import sleep
-import imaplib
-import email, app_password, re, creds, maskpass
+from time import sleep 
+import imaplib, email, app_password, re, creds, maskpass
 import pyperclip as pc
 
 chrome_options = Options()
@@ -100,7 +99,7 @@ try:
 except:
 	driver.quit()
 
-sleep(2)
+sleep(2) # This sleep is important to keep
 
 # - START - Gmail code extractor snippet #
 # Code modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
@@ -144,7 +143,7 @@ one_time_code = matches[0]
 
 # - END - Gmail code extractor snippet #
 
-sleep(2)
+sleep(2) # This sleep is important to keep
 
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
@@ -175,41 +174,47 @@ try:
 except:
 	driver.quit()
 
-sleep(2)
+# # Inputs eight digit username
+# try:
+# 	element = WebDriverWait(driver, 10).until(
+# 		EC.presence_of_element_located((By.NAME, 'j_username'))
+# 	)
+# 	element.send_keys(username)
+# except:
+# 	driver.quit()
 
-# Inputs eight digit username
+# # Inputs password provided by user
+# try:
+# 	element = WebDriverWait(driver, 10).until(
+# 		EC.presence_of_element_located((By.NAME, 'j_password'))
+# 	)
+# 	element.send_keys(password)
+# except:
+# 	driver.quit()
+
+# sleep(15)
+
+# # IMPORTANT: 	User makes a duplicate tab in the browser using the following keys within 15 seconds: 'SHIFT' + 'ALT + d'
+# # 				This bypasses 'j_security' for some reason and allows user access to ePayroll
+
+# try:
+# 	driver.switch_to.window(driver.window_handles[1])
+# except:
+# 	driver.quit() #TODO need an exception here for when there is no 2nd tab
+
+# sleep(2)
+
+# # IMPORTANT:	User hits 'Tab' on the keyboard or selects the 'Password' text box with mouse click
+# # 				User then pastes in the password stored and provided by the 'pyperclip' module: 'COMMAND' + 'v'				
+# #				User mouse clicks on or sends RETURN key for the 'Login' button			
+
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.NAME, 'j_username'))
+		EC.presence_of_element_located((By.XPATH, "//button[text()='Sign in']"))
 	)
-	element.send_keys(username)
+	element.click()
 except:
 	driver.quit()
-
-# Inputs password provided by user
-try:
-	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.NAME, 'j_password'))
-	)
-	element.send_keys(password)
-except:
-	driver.quit()
-
-sleep(15)
-
-# IMPORTANT: 	User makes a duplicate tab in the browser using the following keys within 15 seconds: 'SHIFT' + 'ALT + d'
-# 				This bypasses 'j_security' for some reason and allows user access to ePayroll
-
-try:
-	driver.switch_to.window(driver.window_handles[1])
-except:
-	driver.quit() #TODO need an exception here for when there is no 2nd tab
-
-sleep(2)
-
-# IMPORTANT:	User hits 'Tab' on the keyboard or selects the 'Password' text box with mouse click
-# 				User then pastes in the password stored and provided by the 'pyperclip' module: 'COMMAND' + 'v'				
-#				User mouse clicks on or sends RETURN key for the 'Login' button			
 
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
@@ -236,6 +241,7 @@ while count < num_of_paychecks + 1:
 		sleep(2)
 		
 		pay_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-date')))
+		pay_period = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-period')))
 		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
 		al_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'annual-leave-earned-available')))
 		sl_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sick-leave-current-balance')))
@@ -243,7 +249,9 @@ while count < num_of_paychecks + 1:
 		
 		sleep(2)
 		
-		print(pay_date.text +' Paycheck: ' + net_pay.text)#.replace('$','').replace(',',''))
+		print(f'Pay Date: {pay_date.text}')
+		print(f'Pay Period: {pay_period.text[0:2]}')
+		print(f'Net Pay: {net_pay.text}')#.replace('$','').replace(',',''))
 		print(f'Available AL Balance: {al_balance.text}')
 		print(f'Current SL Balance: {sl_balance.text}')
 		print(f'Current X-Day Balance: {xday_balance.text}\n')
@@ -279,7 +287,7 @@ try:
 except:
 	driver.quit()
 
-print('Finished')
+print('Finished\n')
 
 sleep(10)
 
