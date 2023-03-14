@@ -249,12 +249,12 @@ while count < num_of_paychecks + 1:
 		
 		sleep(2)
 		
-		print(f'Pay Date: {pay_date.text}')
 		print(f'Pay Period: {pay_period.text[0:2]}')
+		print(f'Pay Date: {pay_date.text}')
 		print(f'Net Pay: {net_pay.text}')#.replace('$','').replace(',',''))
 		print(f'Available AL Balance: {al_balance.text}')
 		print(f'Current SL Balance: {sl_balance.text}')
-		print(f'Current X-Day Balance: {xday_balance.text}\n')
+		print(f'Current Relief (X) Days Balance: {xday_balance.text}\n')
 		
 		next_statement = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.LINK_TEXT, 'Statements')))
 
