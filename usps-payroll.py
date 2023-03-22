@@ -19,7 +19,7 @@ chrome_options.add_extension('extension_1_5_1_0.crx')
 # chrome_options.add_argument('--incognito')
 
 username = creds.username
-password = maskpass.advpass('Enter your password:\n', '*')
+password = maskpass.advpass('\nEnter your LiteBlue password:\n', '• ')
 
 print('')
 
@@ -99,7 +99,7 @@ try:
 except:
 	driver.quit()
 
-sleep(2) # This sleep is important to keep
+sleep(2) # This sleep is important to keep - was at 2 secs
 
 # - START - Gmail code extractor snippet #
 # Code modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
@@ -143,18 +143,21 @@ one_time_code = matches[0]
 
 # - END - Gmail code extractor snippet #
 
-sleep(2) # This sleep is important to keep
+sleep(20) # This sleep is important to keep
 
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
 	element = WebDriverWait(driver, 10).until(
-		EC.presence_of_element_located((By.ID, 'input138')) # This number recently changed to input138 from input137 - need to find a better way to access this text field with a CLASS_NAME perhaps?
+		# EC.presence_of_element_located((By.ID, 'input134')) # This number recently changed to to input134 from input138 from input137 - need to find a better way to access this text field with a CLASS_NAME perhaps?
+		EC.presence_of_element_located((By.XPATH, "//*[starts-with(@id, 'input')]")) # Made this bullet-proof using XPATH and partial ID
 	)
 	element.send_keys(one_time_code)
 except:
 	driver.quit()
 
 primary_button()
+
+sleep(5)
 
 # Clicks the 'ePayroll' link at the bottom of landing page
 try:
@@ -273,11 +276,15 @@ try:
 	)
 	elements[0].click()
 
+	sleep(2)
+
 	# This expands the 'Paid Hours' accordian menu 
 	element = WebDriverWait(driver, 10).until(
 		EC.presence_of_all_elements_located((By.CLASS_NAME, 'btn.btn-link.w-100.text-left'))
 	)
 	element[1].click()
+
+	sleep(3)
 	
 	# This finds and prints the current salary
 	element = WebDriverWait(driver, 10).until(
@@ -289,7 +296,7 @@ except:
 
 print('Finished\n')
 
-sleep(10)
+sleep(5)
 
 try:
 	element = WebDriverWait(driver, 10).until(
@@ -299,6 +306,6 @@ try:
 except:
 	driver.quit()
 
-sleep(10)
+sleep(5)
 
 driver.quit()
