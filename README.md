@@ -1,1 +1,1 @@
-USPS ePayroll access through LiteBlue bypassing the tedious MFA (Multifactor Authentication) and printing specific information all paychecks in the year 2023. Finally, the current employee's salary is printed.
+USPS ePayroll access through LiteBlue bypassing the tedious MFA (Multifactor Authentication) and printing specific information for ALL paychecks in the year 2023. Finally, the current employee's salary is printed.
