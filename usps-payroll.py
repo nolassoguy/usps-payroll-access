@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from time import sleep 
 import imaplib, email, app_password, re, creds, maskpass
-import pyperclip as pc
+# import pyperclip as pc
 
 chrome_options = Options()
 chrome_options.add_experimental_option('detach', True)
@@ -23,8 +23,8 @@ password = maskpass.advpass('\nEnter your LiteBlue password:\n', '• ')
 
 print('')
 
-# Copies the user's password into the clipboard to paste later on in the script
-pc.copy(password)
+# Copies the user's password into the clipboard to paste later on in the script - not needed anymore
+# pc.copy(password)
 
 login_url = 'https://liteblue.usps.gov/wps/myportal'
 
@@ -99,7 +99,7 @@ try:
 except:
 	driver.quit()
 
-sleep(2) # This sleep is important to keep - was at 2 secs
+sleep(10) # This sleep is important to keep - was at 10 secs
 
 # - START - Gmail code extractor snippet #
 # Code modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
@@ -143,7 +143,7 @@ one_time_code = matches[0]
 
 # - END - Gmail code extractor snippet #
 
-sleep(20) # This sleep is important to keep
+sleep(5) # This sleep is important to keep
 
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
@@ -208,7 +208,7 @@ except:
 # sleep(2)
 
 # # IMPORTANT:	User hits 'Tab' on the keyboard or selects the 'Password' text box with mouse click
-# # 				User then pastes in the password stored and provided by the 'pyperclip' module: 'COMMAND' + 'v'				
+# # 			User then pastes in the password stored and provided by the 'pyperclip' module: 'COMMAND' + 'v'				
 # #				User mouse clicks on or sends RETURN key for the 'Login' button			
 
 try:
@@ -218,6 +218,13 @@ try:
 	element.click()
 except:
 	driver.quit()
+
+sleep(5)
+
+# Prints out the employee's full name along with the Employer Identification Number
+emp_full_name = driver.find_elements(By.CLASS_NAME, 'card-header')[1]
+print(emp_full_name.text.replace('Earnings Statements ',''))
+print(f'EIN: {creds.username}\n')
 
 num_of_paychecks = len(driver.find_elements(By.PARTIAL_LINK_TEXT, '/23')) #TODO: put in a Try/Except block like the others
 
@@ -294,7 +301,7 @@ try:
 except:
 	driver.quit()
 
-print('Finished\n')
+print('Finished...\n')
 
 sleep(5)
 
