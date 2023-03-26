@@ -99,7 +99,7 @@ try:
 except:
 	driver.quit()
 
-sleep(10) # This sleep is important to keep - was at 10 secs
+sleep(5) # This sleep is important to keep - was at 10 secs
 
 # - START - Gmail code extractor snippet #
 # Code modified from the YouTube video 'AMT2 - Extracting Emails from your Gmail Inbox using python' 
@@ -143,7 +143,7 @@ one_time_code = matches[0]
 
 # - END - Gmail code extractor snippet #
 
-sleep(5) # This sleep is important to keep
+sleep(2) # This sleep is important to keep
 
 # Program enters the unique one-time-code sent to user's Gmail Inbox
 try:
@@ -250,8 +250,9 @@ while count < num_of_paychecks + 1:
 
 		sleep(2)
 		
-		pay_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-date')))
 		pay_period = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-period')))
+		pay_date = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'pay-date')))
+		# gross_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'gross-hours-total')))
 		net_pay = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'net-pay')))
 		al_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'annual-leave-earned-available')))
 		sl_balance = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'sick-leave-current-balance')))
@@ -261,6 +262,7 @@ while count < num_of_paychecks + 1:
 		
 		print(f'Pay Period: {pay_period.text[0:2]}')
 		print(f'Pay Date: {pay_date.text}')
+		# print(f'Gross Pay: {gross_pay.text}')
 		print(f'Net Pay: {net_pay.text}')#.replace('$','').replace(',',''))
 		print(f'Available AL Balance: {al_balance.text}')
 		print(f'Current SL Balance: {sl_balance.text}')
@@ -303,7 +305,7 @@ except:
 
 print('Finished...\n')
 
-sleep(5)
+sleep(2)
 
 try:
 	element = WebDriverWait(driver, 10).until(
@@ -313,6 +315,6 @@ try:
 except:
 	driver.quit()
 
-sleep(5)
+sleep(2)
 
 driver.quit()
